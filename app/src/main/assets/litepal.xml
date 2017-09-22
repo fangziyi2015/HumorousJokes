@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="Joke"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.fangz.humorousjokes.db.Jokes"/>
+        <mapping class="com.fangz.humorousjokes.db.Citys"/>
+    </list>
+
+</litepal>

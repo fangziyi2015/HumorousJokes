@@ -12,7 +12,7 @@ import retrofit2.http.QueryMap;
  * Created by zhangtao on 2017/9/21.
  */
 
-public interface Api {
+public interface JokeApi {
 
     @GET("list.from")
     public Observable<JokeResponse> getJoke(@QueryMap Map<String,String> map);

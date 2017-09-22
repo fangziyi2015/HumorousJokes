@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/toolbar_collect"
+          android:title="收藏"
+          android:icon="@drawable/collect_ico"
+          app:showAsAction="always"/>
+
+    <item android:id="@+id/toolbar_love"
+          android:title="喜欢"
+          android:icon="@drawable/love_ico"
+          app:showAsAction="always"/>
+
+</menu>

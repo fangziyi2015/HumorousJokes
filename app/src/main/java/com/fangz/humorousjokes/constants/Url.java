@@ -5,5 +5,6 @@ package com.fangz.humorousjokes.constants;
  */
 
 public class Url {
-    public static String baseUrl = "http://japi.juhe.cn/joke/content/";
+    public static String jokeBaseUrl = "http://japi.juhe.cn/joke/content/";
+    public static String weatherBaseUrl = "http://v.juhe.cn/weather/";
 }

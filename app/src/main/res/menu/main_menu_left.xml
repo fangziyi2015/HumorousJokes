@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/my"
+            android:icon="@drawable/my_ico"
+            android:title="我的"/>
+
+        <item
+            android:id="@+id/love"
+            android:icon="@drawable/love_ico"
+            android:title="喜欢"/>
+
+        <item
+            android:id="@+id/collect"
+            android:icon="@drawable/collect_ico"
+            android:title="收藏"/>
+
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/joke"
+            android:icon="@drawable/joke_ico"
+            android:title="每日一笑"/>
+
+        <item
+            android:id="@+id/weather"
+            android:icon="@drawable/weather_ico"
+            android:title="今日天气"/>
+
+
+    </group>
+
+</menu>
