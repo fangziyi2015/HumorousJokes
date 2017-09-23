@@ -2,7 +2,7 @@ package com.fangz.humorousjokes.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -28,23 +28,42 @@ import com.fangz.humorousjokes.utils.L;
 import com.fangz.humorousjokes.utils.T;
 import com.orhanobut.logger.Logger;
 
+import org.litepal.crud.DataSupport;
 import org.zackratos.ultimatebar.UltimateBar;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
+    @BindView(R.id.main_tool_bar)
+    Toolbar mMainToolBar;
+    @BindView(R.id.appbar_layout)
+    AppBarLayout mAppbarLayout;
+    @BindView(R.id.recycle_view)
+    RecyclerView mRecycleView;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.main_float_btn)
+    FloatingActionButton mMainFloatBtn;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
     private int page = 1;
+    private JokeRecyclerViewAdapter mJokeRecyclerViewAdapter;
 
     private static final String TAG = "MainActivity";
     private static final String KEY = "key";
@@ -54,22 +73,13 @@ public class MainActivity extends BaseActivity {
     private static final String TIME = "time";
     private static final String ASC = "asc";
     private static final String DESC = "desc";
-    private android.support.v7.widget.Toolbar maintoolbar;
-    private android.support.design.widget.NavigationView navigationview;
-    private android.support.v4.widget.DrawerLayout drawerlayout;
-    private android.support.v7.widget.RecyclerView recycleview;
-
-    private FloatingActionButton mainfloatbtn;
-
     private List<Jokes> mJokes;
-    private android.support.design.widget.AppBarLayout appbarlayout;
-    private android.support.v4.widget.SwipeRefreshLayout swiperefreshlayout;
-    private JokeRecyclerViewAdapter mJokeRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         initView();
         initData();
 
@@ -78,13 +88,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-        this.swiperefreshlayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        this.recycleview = (RecyclerView) findViewById(R.id.recycle_view);
-        this.drawerlayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        this.navigationview = (NavigationView) findViewById(R.id.navigation_view);
-        this.maintoolbar = (Toolbar) findViewById(R.id.main_tool_bar);
-        this.mainfloatbtn = (FloatingActionButton) findViewById(R.id.main_float_btn);
-
         View header_layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.header_layout, null);
         CircleImageView headerView = (CircleImageView) header_layout.findViewById(R.id.header_view);
         headerView.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +97,11 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        navigationview.addHeaderView(header_layout);
-        navigationview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.addHeaderView(header_layout);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                drawerlayout.closeDrawers();
+                mDrawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case R.id.my:
                         // 我的
@@ -119,32 +122,32 @@ public class MainActivity extends BaseActivity {
                     case R.id.weather:
                         T.showShort(MainActivity.this, "今日天气");
                         // 今日天气
-                        Intent intent = new Intent(MainActivity.this,WeatherActivity.class);
+                        Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
                         startActivity(intent);
                         break;
                 }
                 return false;
             }
         });
+//
+        mMainToolBar.setNavigationIcon(R.drawable.home);
+        mMainToolBar.setTitle(getResources().getString(R.string.main_title));
+        setSupportActionBar(mMainToolBar);
 
-        maintoolbar.setNavigationIcon(R.drawable.home);
-        maintoolbar.setTitle(getResources().getString(R.string.main_title));
-        setSupportActionBar(maintoolbar);
-
-        maintoolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mMainToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawerlayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
-        swiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // 刷新
                 requestJokes(String.valueOf(++page));
-                L.d("page==>"+page);
-                swiperefreshlayout.setRefreshing(false);
+                L.d("page==>" + page);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -152,44 +155,32 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
 
-//        mJokes = DataSupport.limit(10).find(Jokes.class);
-//        if (mJokes.size() > 0) {
-//            for (Jokes j : mJokes) {
-//                Logger.i("笑话==>" + j.getJokeContent(), "");
-//            }
-//        }
-
-        mJokes = new ArrayList<>();
-
+        mJokes = DataSupport.limit(10).find(Jokes.class);
         mJokeRecyclerViewAdapter = new JokeRecyclerViewAdapter(mJokes);
+
+        if (mJokes.size() == 0) {
+            requestJokes(String.valueOf(page));
+        }
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recycleview.setLayoutManager(layoutManager);
+        mRecycleView.setLayoutManager(layoutManager);
+        mRecycleView.setAdapter(mJokeRecyclerViewAdapter);
 
-        recycleview.setAdapter(mJokeRecyclerViewAdapter);
 
-        mainfloatbtn.setOnClickListener(new View.OnClickListener() {
+        mMainFloatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recycleview.smoothScrollToPosition(0);
+                mRecycleView.smoothScrollToPosition(0);
             }
         });
-
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .jokeBaseUrl(Url.jokeBaseUrl)
-//                .build();
 //
-//        mApi = retrofit.create(JokeApi.class);
 
-
-        requestJokes(String.valueOf(page));
 
     }
 
     private void requestJokes(String page) {
+        DataSupport.deleteAll(Jokes.class);
         HashMap<String, String> map = new HashMap();
         map.put(KEY, Constant.Key.joke_value);
         map.put(PAGE, page);
@@ -197,14 +188,15 @@ public class MainActivity extends BaseActivity {
         map.put(SORT, ASC);
         map.put(TIME, "1499999999");
         Observable<JokeResponse> jokeResponseObservable = JokeApplication.getJokeApi().getJoke(map);
+        L.d("jokeResponseObservable===>" + jokeResponseObservable);
         jokeResponseObservable.flatMap(new Function<JokeResponse, ObservableSource<JokeResponse.ResultData>>() {
             @Override
-            public ObservableSource<JokeResponse.ResultData> apply(@io.reactivex.annotations.NonNull JokeResponse jokeResponse) throws Exception {
+            public ObservableSource<JokeResponse.ResultData> apply(@NonNull JokeResponse jokeResponse) throws Exception {
                 return Observable.just(jokeResponse.getResult());
             }
         }).flatMap(new Function<JokeResponse.ResultData, ObservableSource<List<JokeResponse.ResultData.JokeContent>>>() {
             @Override
-            public ObservableSource<List<JokeResponse.ResultData.JokeContent>> apply(@io.reactivex.annotations.NonNull JokeResponse.ResultData resultData) throws Exception {
+            public ObservableSource<List<JokeResponse.ResultData.JokeContent>> apply(@NonNull JokeResponse.ResultData resultData) throws Exception {
                 return Observable.just(resultData.getData());
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -218,7 +210,7 @@ public class MainActivity extends BaseActivity {
                             Jokes joke = new Jokes();
                             joke.setJokeContent(content.getContent());
                             joke.setUpdateTime(content.getUpdatetime());
-//                            joke.save();
+                            joke.save();
 //
                             mJokes.add(joke);
                         }

@@ -19,73 +19,72 @@ import com.fangz.humorousjokes.utils.T;
 
 import org.zackratos.ultimatebar.UltimateBar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class JokeDetailActivity extends BaseActivity {
 
-    private android.widget.ImageView detailimg;
-    private android.support.v7.widget.Toolbar detailtoolbar;
-    private android.support.design.widget.CollapsingToolbarLayout collapsingtoolbar;
-    private android.widget.TextView detailcontent;
-    private android.widget.TextView detailupdatetime;
-    private android.support.design.widget.FloatingActionButton floatcommentbtn;
-    private android.support.design.widget.CoordinatorLayout coordinatorlayout;
 
     public static final String JOKE_CONTENT = "joke_content";
     public static final String JOKE_UPDATE_TIME = "joke_update_time";
     public static final String JOKE_IMG = "joke_img";
 
+    @BindView(R.id.detail_img)
+    ImageView mDetailImg;
+    @BindView(R.id.detail_toolbar)
+    Toolbar mDetailToolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.detail_update_time)
+    TextView mDetailUpdateTime;
+    @BindView(R.id.detail_content)
+    TextView mDetailContent;
+    @BindView(R.id.float_comment_btn)
+    FloatingActionButton mFloatCommentBtn;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke_detail);
+        ButterKnife.bind(this);
 
-        initView();
+        UltimateBar ultimateBar = new UltimateBar(this);
+        ultimateBar.setImmersionBar();
 
         initData();
 
     }
 
-    private void initView() {
-        this.coordinatorlayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        this.floatcommentbtn = (FloatingActionButton) findViewById(R.id.float_comment_btn);
-        this.detailcontent = (TextView) findViewById(R.id.detail_content);
-        this.detailupdatetime = (TextView) findViewById(R.id.detail_update_time);
-        this.collapsingtoolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        this.detailtoolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        this.detailimg = (ImageView) findViewById(R.id.detail_img);
-
-        UltimateBar ultimateBar = new UltimateBar(this);
-        ultimateBar.setImmersionBar();
-
-    }
-
     private void initData() {
-        setSupportActionBar(detailtoolbar);
+        setSupportActionBar(mDetailToolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         Intent intent = getIntent();
-        if (intent != null){
+        if (intent != null) {
             Bundle extras = intent.getExtras();
-            if (extras != null){
+            if (extras != null) {
                 String content = extras.getString(JOKE_CONTENT);
                 String updateTime = extras.getString(JOKE_UPDATE_TIME);
-                int imageId = extras.getInt(JOKE_IMG,R.drawable.landscape_a);
+                int imageId = extras.getInt(JOKE_IMG, R.drawable.landscape_a);
 
-                detailcontent.setText(content);
-                detailupdatetime.setText(updateTime);
-                Glide.with(JokeDetailActivity.this).load(imageId).into(detailimg);
+                mDetailContent.setText(content);
+                mDetailUpdateTime.setText(updateTime);
+                Glide.with(JokeDetailActivity.this).load(imageId).into(mDetailImg);
             }
         }
 
-        collapsingtoolbar.setTitle("开心一刻");
+        mCollapsingToolbar.setTitle("开心一刻");
 
-        floatcommentbtn.setOnClickListener(new View.OnClickListener() {
+        mFloatCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 评论专区
-                T.showShort(JokeDetailActivity.this,"评论");
+                T.showShort(JokeDetailActivity.this, "评论");
             }
         });
 
@@ -94,7 +93,7 @@ public class JokeDetailActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;

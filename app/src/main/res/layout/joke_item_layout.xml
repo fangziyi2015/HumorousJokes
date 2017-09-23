@@ -23,7 +23,7 @@
             <ImageView
                 android:id="@+id/joke_img"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/landscape_b"
                 />
@@ -34,28 +34,31 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/joke_img"
                 android:layout_margin="3dp"
+                android:drawableLeft="@drawable/smile_ico"
+                android:drawablePadding="2dp"
+                android:gravity="center_vertical"
                 android:text="开心一笑"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="40dp"
             >
 
             <TextView
                 android:id="@+id/joke_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="2"
-                android:maxLines="2"
-                android:padding="6dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:padding="4dp"
                 android:text="开心一笑"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 />
 
 
@@ -66,10 +69,10 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:maxLines="1"
-                android:padding="6dp"
+                android:padding="4dp"
                 android:text="2015-09-08 11:08:34"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 />
 
         </RelativeLayout>
