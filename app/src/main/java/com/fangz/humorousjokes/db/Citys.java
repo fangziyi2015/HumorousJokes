@@ -24,6 +24,12 @@ public class Citys extends DataSupport {
         this.districtName = districtName;
     }
 
+    public Citys(String provinceName, String cityName, String districtName) {
+        this.provinceName = provinceName;
+        this.cityName = cityName;
+        this.districtName = districtName;
+    }
+
     public int getId() {
         return id;
     }

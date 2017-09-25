@@ -5,6 +5,7 @@
     <list>
         <mapping class="com.fangz.humorousjokes.db.Jokes"/>
         <mapping class="com.fangz.humorousjokes.db.Citys"/>
+        <mapping class="com.fangz.humorousjokes.db.City"/>
     </list>
 
 </litepal>
